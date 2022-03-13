@@ -25,10 +25,6 @@ tri_class_data = pd.read_csv(path2)
 bic_data = bi_class_data.sample(frac=1)
 tric_data = tri_class_data.sample(frac=1)
 
-bi_class_data, len(bi_class_data.index)
-
-tri_class_data.head(), len(tri_class_data.index)
-
 # Calculate proportions: 
 def calculate_proportions(data, classes):
   proportions = {}
@@ -56,9 +52,6 @@ def holdout_sampling(dataset, classes, hp=0.2):
   ttsp = round(n * ttsp)
   trsp = n - ttsp
 
-  # print(f"Of {n} elements, {ttsp} are for testing.")
-  # print(f"Of {n} elements, {trsp} are for trainging.")
-
   for i in range(total_classes):
       c = classes[i] 
       # total of each class in array
@@ -71,9 +64,6 @@ def holdout_sampling(dataset, classes, hp=0.2):
     
       train_props[c] = round(train_props[c])
       test_props[c] = round(test_props[c])
-
-  # print("Proportions training: ", train_props)
-  # print("Proportions test: ", test_props)
 
   sample = []
   for j in range(len(dataset)):
@@ -101,36 +91,6 @@ def holdout_sampling(dataset, classes, hp=0.2):
   sample = np.array(sample)
   return sample
 
-# Preshuffle data
-# Biclass Holdout Sample
-bih_sample = holdout_sampling(bic_data, BICLASSES, 0.2)
-test_indices = np.where(bih_sample == 1)
-train_indices = np.where(bih_sample == 0)
-
-test_values = np.take(bic_data["y"].to_numpy(), test_indices)
-train_values = np.take(bic_data["y"].to_numpy(), train_indices)
-
-test_values_props = calculate_proportions(test_values, BICLASSES)
-train_values_props = calculate_proportions(train_values, BICLASSES)
-
-print("test_values_props: ", test_values_props)
-print("train_values_props: ", train_values_props)
-
-# Preshuffle data
-# Triclass Holdout Sample
-trih_sample = holdout_sampling(tric_data, TRICLASSES, 0.2)
-test_indices = np.where(trih_sample == 1)
-train_indices = np.where(trih_sample == 0)
-
-test_values = np.take(tric_data["y"].to_numpy(), test_indices)
-train_values = np.take(tric_data["y"].to_numpy(), train_indices)
-
-test_values_props = calculate_proportions(test_values, TRICLASSES)
-train_values_props = calculate_proportions(train_values, TRICLASSES)
-
-print("test_values_props: ", test_values_props)
-print("train_values_props: ", train_values_props)
-
 """## K-Folds"""
 
 def kfolds_sampling(data,classes,k=5):
@@ -143,9 +103,6 @@ def kfolds_sampling(data,classes,k=5):
   fold_proportion = 1 / k # percentage of proportion (of each fold)
 
   fold_proportion = n * fold_proportion # Each fold number of elements.
-
-  # print(f"Of {n} elements, {fold_proportion} are for each fold.")
-  # print(f"Classes: {classes}")
 
   proportion_sum = 0
   for i in range(total_classes):
@@ -576,11 +533,13 @@ results = experiment_binary({"method": HOLDOUT, "classes": [1,2],"param": 0.2}, 
 values = list(results.values())
 names = list(results.keys())
 plt.bar(range(len(results)), values, tick_label=names)
+plt.show()
 
 results = experiment_binary({"method": KFOLDS, "classes": [1,2],"param": 10}, bic_data, None)
 values = list(results.values())
 names = list(results.keys())
 plt.bar(range(len(results)), values, tick_label=names)
+plt.show()
 
 """## Evaluacion multiclase"""
 
@@ -678,8 +637,10 @@ results = experiment_multiclass({"method": HOLDOUT, "classes": TRICLASSES,"param
 values = list(results.values())
 names = list(results.keys())
 plt.bar(range(len(results)), values, tick_label=names)
+plt.show()
 
 results = experiment_multiclass({"method": KFOLDS, "classes": TRICLASSES,"param": 5}, tric_data, None)
 values = list(results.values())
 names = list(results.keys())
 plt.bar(range(len(results)), values, tick_label=names)
+plt.show()
