@@ -35,17 +35,16 @@ def get_confussion_matrix(real, pred, classes):
   return df
 
 # Bi-clase
-def get_bi_counts(conf_matrix, negative, positive):
+def get_bi_counts(conf_matrix, positive, negative):
   # Get number of VP, VN, FP, FN
-  if(negative != None and positive != None):
-    # Binary case.
-    bi_counts = {
-      "VP": conf_matrix[positive][positive],
-      "VN": conf_matrix[negative][negative],
-      "FP": conf_matrix[positive][negative],
-      "FN": conf_matrix[negative][positive]
-      }
-    return bi_counts
+  # Binary case.
+  bi_counts = {
+    "VP": conf_matrix[positive][positive],
+    "VN": conf_matrix[negative][negative],
+    "FP": conf_matrix[positive][negative],
+    "FN": conf_matrix[negative][positive]
+    }
+  return bi_counts
 
 """## Bi-clase Precision, Exactitud, Sensibilidad, Coeficiente de Mathews, Especificidad, Medida F-1
 
@@ -82,7 +81,7 @@ def get_matthews_coef(cmc):
   vn = cmc["VN"]
   fp = cmc["FP"]
   fn = cmc["FN"]
-  return  (vp * vn - fp * fn) / sqrt((vn + fn) * (fp + vp) * (vn + fp) * (fn + vp))
+  return  (vp * vn + fp * fn) / sqrt((vn + fn) * (fp + vp) * (vn + fp) * (fn + vp))
 
 """#### F1-Score"""
 
