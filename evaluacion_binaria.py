@@ -78,10 +78,10 @@ def evaluate_binary(tindx, yr, yp, pm):
 
 """Note that in binary classification, recall of the positive class is also known as “sensitivity”; recall of the negative class is “specificity”."""
 
+fig, axs = plt.subplots(1,3,gridspec_kw={'width_ratios': [3,1,1]})
+
 conf_matrix = get_confussion_matrix(bic_data["y"], bic_data["yp"], [1,2])
-sns.heatmap(conf_matrix, annot=True)
-plt.show()
-matrix_shown = True
+sns.heatmap(conf_matrix, annot=True, ax=axs[0])
 
 def experiment_binary(sampling, dataset, n):
   metrics = {
@@ -133,11 +133,11 @@ def experiment_binary(sampling, dataset, n):
 results = experiment_binary({"method": HOLDOUT, "classes": [1,2],"param": 0.2}, bic_data, 50)
 values = list(results.values())
 names = list(results.keys())
-plt.bar(range(len(results)), values, tick_label=names)
-plt.show()
+axs[1].bar(range(len(results)), values, tick_label=names)
 
 results = experiment_binary({"method": KFOLDS, "classes": [1,2],"param": 10}, bic_data, None)
 values = list(results.values())
 names = list(results.keys())
-plt.bar(range(len(results)), values, tick_label=names)
+axs[2].bar(range(len(results)), values, tick_label=names)
+
 plt.show()

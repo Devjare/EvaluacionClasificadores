@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 
 """# EJERCICIO 2. MEDIDAS DE DESEMPEÑO
 ## Matriz de confusion.
@@ -171,11 +172,23 @@ def get_multiclass_sensivity(conf_matrix, classes):
 
 # Matthews coef or Phi coef.
 def get_phi_coef_multiclass(conf_matrix, classes):
+  # print("Confussion matrix: \n", conf_matrix)
+  coeficient = 0.0
   trc = sum(np.diag(conf_matrix))
   n = sum(sum(conf_matrix.to_numpy()))
   counts = get_tri_counts(conf_matrix, classes)
-  c = len(conf_matrix.index)
-  vp_sum = fp_sum = fn_sum = vn_sum = 0
+  # c = len(conf_matrix.index)
+  print("Counts: ", counts)
+  sum_fn_fp = 0.0
+  for i in range(len(counts)):
+    c = i + 1
+    fn = counts[i]["FN"]
+    fp = counts[i]["FP"]
+    sum_fn_fp += fn * fp
+
+  coeficient += (trc * c) - sum_fn_fp 
+
+  return coeficient
 
 """## Score F1"""
 

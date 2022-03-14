@@ -47,10 +47,9 @@ def get_test_indices(sample, test_value):
 
 """## Evaluacion multiclase"""
 
+fig, axs = plt.subplots(1,3,gridspec_kw={'width_ratios': [2,2,2]})
 tri_matrix = get_confussion_matrix(tric_data['y'], tric_data['yp'], TRICLASSES)
-tri_matrix
-sns.heatmap(tri_matrix, annot=True)
-plt.show()
+sns.heatmap(tri_matrix, annot=True, ax=axs[0])
 
 counts = get_tri_counts(tri_matrix, TRICLASSES)
 print(counts)
@@ -84,9 +83,7 @@ def evaluate_multiclass(tindx, yr, yp, classes, pm):
   elif(pm == "speci"):
     return get_multiclass_specificity(conf_matrix, classes)
   elif(pm == "phi_coef"):
-    return 0.0
-    # TODO: IMPLEMENT PENDING COEF
-    # return get_phi_coef_multiclass(conf_matrix, classes)
+    return get_phi_coef_multiclass(conf_matrix, classes)
 
 def experiment_multiclass(sampling, dataset, n):
   metrics = {
@@ -141,11 +138,10 @@ def experiment_multiclass(sampling, dataset, n):
 results = experiment_multiclass({"method": HOLDOUT, "classes": TRICLASSES,"param": 0.2}, tric_data, 50)
 values = list(results.values())
 names = list(results.keys())
-plt.bar(range(len(results)), values, tick_label=names)
-plt.show()
+axs[1].bar(range(len(results)), values, tick_label=names)
 
 results = experiment_multiclass({"method": KFOLDS, "classes": TRICLASSES,"param": 5}, tric_data, None)
 values = list(results.values())
 names = list(results.keys())
-plt.bar(range(len(results)), values, tick_label=names)
+axs[2].bar(range(len(results)), values, tick_label=names)
 plt.show()
