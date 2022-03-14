@@ -50,9 +50,9 @@ def get_test_indices(sample, test_value):
 fig, axs = plt.subplots(1,3,gridspec_kw={'width_ratios': [2,2,2]})
 tri_matrix = get_confussion_matrix(tric_data['y'], tric_data['yp'], TRICLASSES)
 sns.heatmap(tri_matrix, annot=True, ax=axs[0])
+axs[0].set_title("Complete Confussion Matrix")
 
 counts = get_tri_counts(tri_matrix, TRICLASSES)
-print(counts)
 
 def evaluate_multiclass(tindx, yr, yp, classes, pm):
   # pm = Perforcmance Metric to use(ie precision, accuracy, F1-Score, etc.)
@@ -119,7 +119,6 @@ def experiment_multiclass(sampling, dataset, n):
 
   else:
     # KFOLDS
-    print("Kfolds method")
     folds = sampling["param"]
     newsample = kfolds_sampling(dataset, classes, folds)
 
@@ -135,13 +134,23 @@ def experiment_multiclass(sampling, dataset, n):
 
   return metrics
 
-results = experiment_multiclass({"method": HOLDOUT, "classes": TRICLASSES,"param": 0.2}, tric_data, 50)
+n = 50
+results = experiment_multiclass({"method": HOLDOUT, "classes": TRICLASSES,"param": 0.2}, tric_data, n)
+print(f"\nResults holdout(n = {n}) multiclass: ")
+for k in results:
+    print(f"{k}: {results[k]}")
 values = list(results.values())
 names = list(results.keys())
 axs[1].bar(range(len(results)), values, tick_label=names)
+axs[1].set_title("Holdout Performace Average")
 
-results = experiment_multiclass({"method": KFOLDS, "classes": TRICLASSES,"param": 5}, tric_data, None)
+k = 10
+results = experiment_multiclass({"method": KFOLDS, "classes": TRICLASSES,"param": k}, tric_data, None)
+print(f"\nResults kfolds(k={k}) multiclass: ")
+for k in results:
+    print(f"{k}: {results[k]}")
 values = list(results.values())
 names = list(results.keys())
 axs[2].bar(range(len(results)), values, tick_label=names)
+axs[2].set_title("KFolds Performace Average")
 plt.show()

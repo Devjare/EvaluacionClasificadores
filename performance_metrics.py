@@ -7,31 +7,15 @@ import math
 """
 def get_confussion_matrix(real, pred, classes):
   nc = len(classes)
+  df = None
   if(nc == 2):
     # Bi-class evaluation.
     positive = classes[0]
     negative = classes[1]
-    # order = [0, 1]
-    # [
-    #  [VP, VN],
-    #  [FP, FV]]
     df = pd.DataFrame({positive: [0, 0],
                        negative: [0, 0],
                        },
                         index=[positive, negative])
-  
-    for i in range(len(real)):
-      if((real[i] == positive or pred[i] == positive) and real[i] == pred[i]):
-        df[positive][positive] += 1        
-      elif((real[i] == negative or pred[i] == negative) and real[i] == pred[i]):
-        df[negative][negative] += 1
-      elif(real[i] == positive and pred[i] == negative):
-        #print(f"POSITIVE/NEGATIVE = Real: {real[i]}, Pred: {pred[i]}")
-        df[negative][positive] += 1
-      else:
-        #print(f"NEGATIVE/POSITIVE = Real: {real[i]}, Pred: {pred[i]}")
-        df[positive][negative] += 1
-    return df
   else:
     # Special case for 3-dimensional classes.
     # This can be defined dynamically, hardcoded for test purposes.
@@ -41,15 +25,14 @@ def get_confussion_matrix(real, pred, classes):
       df_meta[c] = np.zeros(len(classes))
 
     df = pd.DataFrame(df_meta,index=classes)
-    
-    # Get confussion matrixc
-    yr = np.array(real)
-    yp = np.array(pred)
-    for i in range(1, 4, 1):
-      for j in range(1, 4, 1):
-        df[j][i] = sum((yr == i) & (yp == j))
-
-    return df
+  
+  yr = np.array(real)
+  yp = np.array(pred)
+  for i in range(1, nc+1, 1):
+    for j in range(1, nc+1, 1):
+      df[j][i] = sum((yr == i) & (yp == j))
+ 
+  return df
 
 # Bi-clase
 def get_bi_counts(conf_matrix, negative, positive):
@@ -99,7 +82,7 @@ def get_matthews_coef(cmc):
   vn = cmc["VN"]
   fp = cmc["FP"]
   fn = cmc["FN"]
-  return  (vp * vn + fp * fn) / sqrt((vp + fp) * (vp + fn) * (vn + fp) * (vn + fn))
+  return  (vp * vn - fp * fn) / sqrt((vn + fn) * (fp + vp) * (vn + fp) * (fn + vp))
 
 """#### F1-Score"""
 

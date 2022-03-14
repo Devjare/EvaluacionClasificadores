@@ -82,6 +82,7 @@ fig, axs = plt.subplots(1,3,gridspec_kw={'width_ratios': [3,1,1]})
 
 conf_matrix = get_confussion_matrix(bic_data["y"], bic_data["yp"], [1,2])
 sns.heatmap(conf_matrix, annot=True, ax=axs[0])
+axs[0].set_title("Complete Confussion Matrix")
 
 def experiment_binary(sampling, dataset, n):
   metrics = {
@@ -116,7 +117,6 @@ def experiment_binary(sampling, dataset, n):
 
   else:
     # KFOLDS
-    print("Kfolds method")
     folds = sampling["param"]
     newsample = kfolds_sampling(dataset, classes, folds)
 
@@ -130,14 +130,24 @@ def experiment_binary(sampling, dataset, n):
 
   return metrics
 
-results = experiment_binary({"method": HOLDOUT, "classes": [1,2],"param": 0.2}, bic_data, 50)
+n = 50
+results = experiment_binary({"method": HOLDOUT, "classes": [1,2],"param": 0.2}, bic_data, n)
+print(f"\nBinary holdout(n={n}) evaluation results: ")
+for k in results:
+    print(f"{k}: {results[k]}")
 values = list(results.values())
 names = list(results.keys())
 axs[1].bar(range(len(results)), values, tick_label=names)
+axs[1].set_title("Holdout Performace Average")
 
-results = experiment_binary({"method": KFOLDS, "classes": [1,2],"param": 10}, bic_data, None)
+k = 10
+results = experiment_binary({"method": KFOLDS, "classes": [1,2],"param": k}, bic_data, None)
+print(f"\nBinary KFOLDS(k={k}) evaluation results: ")
+for k in results:
+    print(f"{k}: {results[k]}")
 values = list(results.values())
 names = list(results.keys())
 axs[2].bar(range(len(results)), values, tick_label=names)
+axs[2].set_title("KFolds Performace Average")
 
 plt.show()
