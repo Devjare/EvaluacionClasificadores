@@ -178,7 +178,6 @@ def get_phi_coef_multiclass(conf_matrix, classes):
   n = sum(sum(conf_matrix.to_numpy()))
   counts = get_tri_counts(conf_matrix, classes)
   # c = len(conf_matrix.index)
-  print("Counts: ", counts)
   sum_fn_fp = 0.0
   for i in range(len(counts)):
     fn = counts[i]["FN"]
