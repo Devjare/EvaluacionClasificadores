@@ -181,12 +181,25 @@ def get_phi_coef_multiclass(conf_matrix, classes):
   print("Counts: ", counts)
   sum_fn_fp = 0.0
   for i in range(len(counts)):
-    c = i + 1
     fn = counts[i]["FN"]
     fp = counts[i]["FP"]
     sum_fn_fp += fn * fp
 
-  coeficient += (trc * c) - sum_fn_fp 
+  coeficient += (trc * n) - sum_fn_fp
+
+  squared_fp = 0.0
+  squared_fn = 0.0
+  for i in range(len(counts)):
+    fp = counts[i]["FP"]
+    fp = fp ** 2
+    squared_fp += fp
+    
+    fn = counts[i]["FP"]
+    fn = fn ** 2
+    squared_fn += fn
+ 
+  total_squared = n ** 2
+  coeficient /= math.sqrt((total_squared - squared_fp) * (total_squared - squared_fn))
 
   return coeficient
 
