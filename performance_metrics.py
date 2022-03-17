@@ -8,23 +8,15 @@ import math
 def get_confussion_matrix(real, pred, classes):
   nc = len(classes)
   df = None
-  if(nc == 2):
-    # Bi-class evaluation.
-    positive = classes[0]
-    negative = classes[1]
-    df = pd.DataFrame({positive: [0, 0],
-                       negative: [0, 0],
-                       },
-                        index=[positive, negative])
-  else:
-    # Special case for 3-dimensional classes.
-    # This can be defined dynamically, hardcoded for test purposes.
-    df_meta = {}
-    for i in range(nc):
-      c = classes[i]
-      df_meta[c] = np.zeros(len(classes))
+  
+  # Special case for 3-dimensional classes.
+  # This can be defined dynamically, hardcoded for test purposes.
+  df_meta = {}
+  for i in range(nc):
+    c = classes[i]
+    df_meta[c] = np.zeros(len(classes))
 
-    df = pd.DataFrame(df_meta,index=classes)
+  df = pd.DataFrame(df_meta,index=classes)
   
   yr = np.array(real)
   yp = np.array(pred)
@@ -81,7 +73,7 @@ def get_matthews_coef(cmc):
   vn = cmc["VN"]
   fp = cmc["FP"]
   fn = cmc["FN"]
-  return  (vp * vn + fp * fn) / sqrt((vn + fn) * (fp + vp) * (vn + fp) * (fn + vp))
+  return  (vp * vn - fp * fn) / sqrt((vn + fn) * (fp + vp) * (vn + fp) * (fn + vp))
 
 """#### F1-Score"""
 
@@ -152,35 +144,48 @@ def get_multiclass_sensivity(conf_matrix, classes):
 
 """## Coeficinete de Matthews(PENDIENTE)"""
 
+
 # Matthews coef or Phi coef.
 def get_phi_coef_multiclass(conf_matrix, classes):
-  # print("Confussion matrix: \n", conf_matrix)
+  nc = len(classes)
   coeficient = 0.0
   trc = sum(np.diag(conf_matrix))
+  cT = conf_matrix.transpose()
   n = sum(sum(conf_matrix.to_numpy()))
   counts = get_tri_counts(conf_matrix, classes)
-  # c = len(conf_matrix.index)
-  sum_fn_fp = 0.0
-  for i in range(len(counts)):
-    fn = counts[i]["FN"]
-    fp = counts[i]["FP"]
-    sum_fn_fp += fn * fp
+  nr_sum = 0.0 # Numerator right sum
+  dl_sum = 0.0 # Denominator left sum
+  dr_sum = 0.0 # Denominator right sum
 
-  coeficient += (trc * n) - sum_fn_fp
+  for i in range(nc):
+      row = conf_matrix.iloc[i] # not i+1, since iloc utilices common array indices(from 0 to n)
+      tRow = cT.iloc[i] # Transposed row.
+      for j in range(nc):
+          col = conf_matrix[j+1] # i+1 since that is the "name" of the column, not searched by index.
+          tCol = cT[j+1] # Transposed column
+          dot_n = np.dot(row, col) # Dot product, numerator
+          dot_dl = np.dot(row, tCol) # Dot product, left part of denominator
+          dot_dr = np.dot(tRow, col) # Dot product, right part of denominator
+          
+          nr_sum += dot_n
+          dl_sum += dot_dl # Denominator left sum
+          dr_sum += dot_dr # Denominator right sum
 
-  squared_fp = 0.0
-  squared_fn = 0.0
-  for i in range(len(counts)):
-    fp = counts[i]["FP"]
-    fp = fp ** 2
-    squared_fp += fp
-    
-    fn = counts[i]["FP"]
-    fn = fn ** 2
-    squared_fn += fn
+
+  coeficient += (trc * n) - nr_sum
+
+  # for i in range(nc):
+  #   fp = counts[i]["FP"]
+  #   fp = fp ** 2
+  #   squared_fp += fp
+  #   
+  #   fn = counts[i]["FP"]
+  #   fn = fn ** 2
+  #   squared_fn += fn
  
   total_squared = n ** 2
-  coeficient /= math.sqrt((total_squared - squared_fp) * (total_squared - squared_fn))
+  # coeficient /= math.sqrt((total_squared - squared_fp) * (total_squared - squared_fn))
+  coeficient /= math.sqrt((total_squared - dl_sum) * (total_squared - dr_sum))
 
   return coeficient
 
@@ -196,13 +201,20 @@ def get_f1_multiclass(conf_matrix, classes):
 """## Multi-clase"""
 def get_tri_counts(conf_matrix, classes):
     nc = len(classes)
+    # Diagonal principal(arreglo)
     VPa = np.diag(conf_matrix)
     VP = sum(VPa)
+    # Vectores vacios.
     FN = np.array(np.zeros(nc))
     FP = np.array(np.zeros(nc))
     n = sum(sum(conf_matrix.to_numpy()))
     for i in range(nc):
+      # Por cada clase,se agrega la suma de la columna [i+1] menos
+      # el VP en esa columna VPa[i]
       FN[i] = sum(conf_matrix[i+1]) - VPa[i]
+      
+      # Por cada clase,se agrega la suma de la fila iloc[i+1] menos
+      # el VP en esa fila VPa[i]
       FP[i] = sum(conf_matrix.iloc[i].to_numpy()) - VPa[i]
 
     SUM_FP = sum(FP)

@@ -1,5 +1,6 @@
 from sampling_methods import calculate_proportions, holdout_sampling, kfolds_sampling
 from performance_metrics import *
+from sklearn import metrics
 
 HOLDOUT = "holdout"
 KFOLDS = "kfolds"
@@ -26,7 +27,7 @@ def evaluate_binary(tindx, yr, yp, pm):
 
   conf_matrix = get_confussion_matrix(test_real, test_pred, [1,2])
   # conf_matrix, positiveclass, negativeclass
-  values_count = get_bi_counts(conf_matrix, 1, 2) # Negative = 2, positive = 1
+  values_count = get_bi_counts(conf_matrix, 2, 1) # Negative = 2, positive = 1
 
   if(pm == 'f1'):
     return get_f1_score(values_count)
@@ -53,10 +54,10 @@ def experiment_binary(sampling, dataset, n):
       'speci': 0.0
   }
 
-  sampling_method = sampling["method"]
-
   yr = dataset["y"]
   yp = dataset["yp"]
+
+  sampling_method = sampling["method"]
   
   classes = sampling["classes"]
 
@@ -64,9 +65,15 @@ def experiment_binary(sampling, dataset, n):
     test_proportion = sampling["param"]
    
     for i in range(n):
+
       newsample = holdout_sampling(dataset, classes, test_proportion)
       # print("new sample: ", newsample)
       test_indices = get_test_indices(newsample, 1)
+
+      # shuffle dataset again
+      dataset = dataset.sample(frac=1)
+      yr = dataset["y"]
+      yp = dataset["yp"]
 
       for m in metrics:
         metrics[m] += evaluate_binary(test_indices, yr, yp, m)
@@ -157,6 +164,7 @@ def experiment_multiclass(sampling, dataset, n):
     # KFOLDS
     folds = sampling["param"]
     newsample = kfolds_sampling(dataset, classes, folds)
+    print("KFOLDS SAMPLE: ", newsample)
 
     for i in range(folds):
       test_indices = get_test_indices(newsample, i)

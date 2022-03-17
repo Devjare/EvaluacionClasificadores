@@ -16,6 +16,7 @@ POSITIVE = 1
 NEGATIVE = 2
 BICLASSES = [1,2]
 
+# path = os.path.join(os.getcwd(), "data/gauss2D-2C-05.csv")
 path = os.path.join(os.getcwd(), "data/gauss2D-2C-04.csv")
 
 bi_class_data = pd.read_csv(path)
