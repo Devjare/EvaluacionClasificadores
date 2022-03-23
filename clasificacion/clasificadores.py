@@ -20,7 +20,8 @@ method = int(sys.argv[2]) if sys.argv[2] else 1
 
 # Normalize
 nc_data = data.drop("y", axis=1)#Not Class Data
-norm_data = (nc_data - nc_data.min()) / (nc_data.max() - nc_data.min())
+# norm_data = (nc_data - nc_data.min()) / (nc_data.max() - nc_data.min())
+norm_data = nc_data
 norm_data['y'] = data['y']
 
 n = norm_data['y'].unique() # Number of classes
@@ -29,7 +30,7 @@ nc = len(n)
 # numpy rows to classify.
 test_data = norm_data.iloc[0:len(norm_data), :].drop("y", axis=1).to_numpy()
 predicted = []
-
+distances = {}
 output_name = ""
 if(method == 1):
     # EUCLIDEAN DISTANCE
@@ -45,6 +46,8 @@ if(method == 1):
           max = c
 
       predicted.append(max)
+
+    print("Distances: ", distances)
 if(method == 2):
     output_name = "mahalanobis"
     # MAHALANOBIS DISTANCE
@@ -80,4 +83,9 @@ if(method == 3):
 norm_data['yp'] = predicted
 
 print(norm_data)
+
+y = norm_data["y"]
+yp = norm_data["yp"]
+print("Resultado: ", sum(y == yp))
+
 norm_data.to_csv(f"./{output_name}_classified.csv")

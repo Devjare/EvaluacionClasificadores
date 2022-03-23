@@ -52,12 +52,12 @@ if(method == "holdout"):
     plt.show()
 elif(method == "kfolds"):
     # KFOLDS EVALUATION 
-    results = experiment_multiclass({"method": KFOLDS, "classes": TRICLASSES,"param": folds}, tric_data, None)
+    results = experiment_multiclass({"method": KFOLDS, "classes": CLASSES,"param": folds}, tric_data, None)
     print(f"\nResults kfolds(k={folds}) multiclass: ")
     for k in results:
         print(f"{k}: {results[k]}")
     values = list(results.values())
     names = list(results.keys())
-    plt.bar(range(len(results)), values, tick_label=names)
-    plt.title("KFolds Performace Average")
-    plt.show()
+    # plt.bar(range(len(results)), values, tick_label=names)
+    # plt.title("KFolds Performace Average")
+    # plt.show()
