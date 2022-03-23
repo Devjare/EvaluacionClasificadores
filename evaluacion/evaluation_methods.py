@@ -164,7 +164,7 @@ def experiment_multiclass(sampling, dataset, n):
     # KFOLDS
     folds = sampling["param"]
     newsample = kfolds_sampling(dataset, classes, folds)
-    print("KFOLDS SAMPLE: ", newsample)
+    # print("KFOLDS SAMPLE: ", newsample)
 
     for i in range(folds):
       test_indices = get_test_indices(newsample, i)
