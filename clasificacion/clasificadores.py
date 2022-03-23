@@ -43,7 +43,7 @@ if(method == 1):
       for c in range(1, nc+1):
         if(distances[c] < distances[max]):
           max = c
-     
+
       predicted.append(max)
 if(method == 2):
     output_name = "mahalanobis"
