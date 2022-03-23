@@ -9,6 +9,7 @@ import math
 import sys
 from bayes_general import get_terms, gi
 from mahalanobis import get_combined_cov, get_means, get_distances
+import euclidean
 
 # MIO
 url_dataset = sys.argv[1]
@@ -29,16 +30,32 @@ nc = len(n)
 test_data = norm_data.iloc[0:len(norm_data), :].drop("y", axis=1).to_numpy()
 predicted = []
 
+output_name = ""
+if(method == 1):
+    # EUCLIDEAN DISTANCE
+    output_name = "euclidean"
+    c_means = euclidean.get_means(norm_data, nc) # Means per class
+    print("Means: ", c_means)
+    for i in range(len(norm_data)):
+      # print("Test vector: \n", test_data[i])
+      distances = euclidean.get_distances(c_means, norm_data, nc, test_data[i])
+      max = [*distances][0] # Default distance
+      for c in range(1, nc+1):
+        if(distances[c] < distances[max]):
+          max = c
+     
+      predicted.append(max)
 if(method == 2):
+    output_name = "mahalanobis"
     # MAHALANOBIS DISTANCE
     combined_cov = get_combined_cov(norm_data, nc) # Combined Covariance Matrix.
     print("Combined covariance matrix: \n", combined_cov)
     c_means = get_means(norm_data, nc) # Means per class
     print("Means: ", c_means)
     for i in range(len(norm_data)):
-      print("Test vector: \n", test_data[i])
+      # print("Test vector: \n", test_data[i])
       distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[i])
-      print("Means differences: ", distances)
+      # print("Means differences: ", distances)
       max = [*distances][0] # Default distance
       for c in range(1, nc+1):
         if(distances[c] < distances[max]):
@@ -47,6 +64,7 @@ if(method == 2):
       predicted.append(max)
 
 if(method == 3):
+    output_name = "bayes_general"
     # BAYES GENERAL CLASSIFICATION(EQUAL COVARIANCES)
     qws, ws, w_0s = get_terms(norm_data, nc)
     for i in range(len(norm_data)):
@@ -62,4 +80,4 @@ if(method == 3):
 norm_data['yp'] = predicted
 
 print(norm_data)
-norm_data.to_csv("./classified.csv")
+norm_data.to_csv(f"./{output_name}_classified.csv")

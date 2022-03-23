@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 import math
@@ -23,7 +22,7 @@ def get_combined_cov(norm_data, nc):
       ci[c] = norm_data[norm_data["y"] == c]
       # Covariance matrix for each class.
       covs[c] = ci[c].drop('y', axis=1).cov()
-      # print(f"Covs[{c}]: \n{covs[c]}")
+      print(f"Covs[{c}]: \n{covs[c]}")
       cov += covs[c] * (ni - 1)
 
     

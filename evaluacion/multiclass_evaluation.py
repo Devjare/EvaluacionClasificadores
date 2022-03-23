@@ -33,10 +33,10 @@ CLASSES = tric_data["y"].unique()
 # print("Holdout triclass sample: ", hotri_sample)
 # print("Kfolds triclass sample: ", kftri_sample)
 
-# fig, axs = plt.subplots(1,3,gridspec_kw={'width_ratios': [2,2,2]})
-# sns.heatmap(tri_matrix, annot=True, ax=axs[0])
+# tri_matrix = get_confussion_matrix(tric_data['y'], tric_data['yp'], CLASSES)
+# fig, axs = plt.subplots(1,2,gridspec_kw={'width_ratios': [1,1]})
 # axs[0].set_title("Complete Confussion Matrix")
-# tri_matrix = get_confussion_matrix(tric_data['y'], tric_data['yp'], TRICLASSES)
+# sns.heatmap(tri_matrix, annot=True, ax=axs[0])
 
 # HOLDOUT EVALUATION 
 method = sys.argv[2]
@@ -47,8 +47,9 @@ if(method == "holdout"):
         print(f"{k}: {results[k]}")
     values = list(results.values())
     names = list(results.keys())
-    # axs[1].bar(range(len(results)), values, tick_label=names)
-    # axs[1].set_title("Holdout Performace Average")
+    plt.bar(range(len(results)), values, tick_label=names)
+    plt.title("KFolds Performace Average")
+    plt.show()
 elif(method == "kfolds"):
     # KFOLDS EVALUATION 
     results = experiment_multiclass({"method": KFOLDS, "classes": TRICLASSES,"param": folds}, tric_data, None)
@@ -57,6 +58,6 @@ elif(method == "kfolds"):
         print(f"{k}: {results[k]}")
     values = list(results.values())
     names = list(results.keys())
-    # axs[2].bar(range(len(results)), values, tick_label=names)
-    # axs[2].set_title("KFolds Performace Average")
-    # plt.show()
+    plt.bar(range(len(results)), values, tick_label=names)
+    plt.title("KFolds Performace Average")
+    plt.show()
