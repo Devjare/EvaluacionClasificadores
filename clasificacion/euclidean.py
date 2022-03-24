@@ -34,10 +34,13 @@ def get_distances(means, norm_data, nc, test_data):
         xmus[c] = test_data - means[c] # difference per each vector of means
         last = xmus[c]
         xmus_t[c] = xmus[c].transpose()
+        # dotp = xmus_t[c].dot(xmus[c])
         dotp = xmus_t[c].dot(xmus[c])
+        pd.DataFrame(xmus).to_csv("last_xmus.csv")
+        pd.DataFrame(xmus_t).to_csv("last_xmus_t.csv")
         # print("Dotp: ", dotp)
         # print(f"Type: {type(dotp)}")
-        differences[c] = math.sqrt(dotp)
+        differences[c] = np.sqrt(dotp)
 
-    print("differences: ", differences)
+    # print("differences: ", differences)
     return differences

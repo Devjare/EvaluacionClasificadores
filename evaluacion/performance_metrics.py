@@ -88,10 +88,12 @@ def get_f1_score(cmc):
 
 ####### MULTI CLASS METRICS: ############
 def get_global_accuracy(conf_matrix):
+  print("Conf matrix: ", conf_matrix)
   trc = sum(np.diag(conf_matrix))
   n = sum(sum(conf_matrix.to_numpy()))
-
-  return trc/n
+  acc = trc/n
+  print(f"Global Accuracy({trc}/{n}): ", acc)
+  return acc
 
 def get_avg_accuracy(conf_matrix, classes):
   n = sum(sum(conf_matrix.to_numpy()))
