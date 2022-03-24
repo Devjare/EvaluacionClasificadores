@@ -12,7 +12,7 @@ export TREVINO_DS=https://www.tamps.cinvestav.mx/~wgomez/material/RP/tarea2/vowe
 # python clasificacion/clasificadores.py $ANDRES_DS 2
 
 # Evaluate euclideani
-python clasificacion/clasificadores.py $ABDIEL_DS 1
+python clasificacion/clasificadores.py $ANDRES_DS 1
 
 python evaluacion/multiclass_evaluation.py euclidean_classified.csv kfolds
 # python evaluacion/multiclass_evaluation.py mahalanobis_classified.csv kfolds

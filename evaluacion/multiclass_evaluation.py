@@ -13,7 +13,7 @@ from evaluation_methods import *
 HOLDOUT = "holdout"
 KFOLDS = "kfolds"
 TRICLASSES = [1,2,3]
-folds = 10
+folds = 5
 p = 0.2
 n = 50
 
@@ -23,7 +23,10 @@ path = os.path.join(os.getcwd(), filedir)
 tri_class_data = pd.read_csv(path)
 
 # Preshuffle
-tric_data = tri_class_data.sample(frac=1)
+# tric_data = tri_class_data.sample(frac=1)
+tric_data = tri_class_data
+fold_samples = tric_data["5fold"]
+tric_data = tri_class_data.drop("5fold", axis=1)
 CLASSES = tric_data["y"].unique()
 
 # (Re)muestreo
@@ -52,7 +55,7 @@ if(method == "holdout"):
     plt.show()
 elif(method == "kfolds"):
     # KFOLDS EVALUATION 
-    results = experiment_multiclass({"method": KFOLDS, "classes": CLASSES,"param": folds}, tric_data, None)
+    results = experiment_multiclass({"method": KFOLDS, "classes": CLASSES,"param": folds, "fold_samples": fold_samples}, tric_data, None)
     print(f"\nResults kfolds(k={folds}) multiclass: ")
     for k in results:
         print(f"{k}: {results[k]}")

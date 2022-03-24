@@ -21,7 +21,8 @@ method = int(sys.argv[2]) if sys.argv[2] else 1
 # Normalize
 nc_data = data.drop("y", axis=1)#Not Class Data
 # norm_data = (nc_data - nc_data.min()) / (nc_data.max() - nc_data.min())
-norm_data = nc_data
+foldr = nc_data["5fold"] 
+norm_data = nc_data.drop("5fold", axis=1)
 norm_data['y'] = data['y']
 
 n = norm_data['y'].unique() # Number of classes
@@ -37,6 +38,7 @@ if(method == 1):
     output_name = "euclidean"
     c_means = euclidean.get_means(norm_data, nc) # Means per class
     print("Means: ", c_means)
+    # distances = euclidean.get_distances(c_means, norm_data, nc, test_data[len(test_data)-1])
     for i in range(len(norm_data)):
       # print("Test vector: \n", test_data[i])
       distances = euclidean.get_distances(c_means, norm_data, nc, test_data[i])
@@ -47,24 +49,25 @@ if(method == 1):
 
       predicted.append(max)
 
-    print("Distances: ", distances)
+    # print("Distances: ", distances)
 if(method == 2):
     output_name = "mahalanobis"
     # MAHALANOBIS DISTANCE
     combined_cov = get_combined_cov(norm_data, nc) # Combined Covariance Matrix.
     print("Combined covariance matrix: \n", combined_cov)
     c_means = get_means(norm_data, nc) # Means per class
+    distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[len(test_data)-1])
     print("Means: ", c_means)
-    for i in range(len(norm_data)):
-      # print("Test vector: \n", test_data[i])
-      distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[i])
-      # print("Means differences: ", distances)
-      max = [*distances][0] # Default distance
-      for c in range(1, nc+1):
-        if(distances[c] < distances[max]):
-          max = c
-     
-      predicted.append(max)
+    # for i in range(len(norm_data)):
+    #   # print("Test vector: \n", test_data[i])
+    #   distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[i])
+    #   # print("Means differences: ", distances)
+    #   max = [*distances][0] # Default distance
+    #   for c in range(1, nc+1):
+    #     if(distances[c] < distances[max]):
+    #       max = c
+    #  
+    #   predicted.append(max)
 
 if(method == 3):
     output_name = "bayes_general"
@@ -80,7 +83,10 @@ if(method == 3):
     
       predicted.append(max)
 
+# naive-bayes is p(x|wi) * p(wi)
+
 norm_data['yp'] = predicted
+norm_data['5fold'] = foldr
 
 print(norm_data)
 
