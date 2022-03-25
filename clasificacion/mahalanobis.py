@@ -19,16 +19,20 @@ def get_combined_cov(norm_data, nc):
 
     for c in range(1, nc+1):
       ni = len(norm_data[norm_data["y"] == c])
+      print("Total por clase: ", ni)
       ci[c] = norm_data[norm_data["y"] == c]
+      print(f"Ci[{c}]: \n", ci[c])
       # Covariance matrix for each class.
       covs[c] = ci[c].drop('y', axis=1).cov()
+      # covs[c] = np.cov(ci[c].drop('y', axis=1))
       print(f"Covs[{c}]: \n{covs[c]}")
       cov += covs[c] * (ni - 1)
 
     
-    print(f"cov: \n{cov}")
+    # print(f"cov: \n{cov}")
     matrix = combined_cov * cov
 
+    pd.DataFrame(matrix).to_csv("combined_cov.csv")
     return matrix
 
 def get_means(norm_data, nc):

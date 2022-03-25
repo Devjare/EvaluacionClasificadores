@@ -8,9 +8,11 @@ import pandas as pd
 import math
 import sys
 from bayes_general import get_terms, gi
-from mahalanobis import get_combined_cov, get_means, get_distances
+from mahalanobis import get_combined_cov, get_distances
 import euclidean
+import naive_bayes
 from sklearn.preprocessing import MinMaxScaler
+import util
 
 # MIO
 url_dataset = sys.argv[1]
@@ -68,8 +70,10 @@ if(method == 2):
     output_name = "mahalanobis"
     # MAHALANOBIS DISTANCE
     combined_cov = get_combined_cov(norm_data, nc) # Combined Covariance Matrix.
-    print("Combined covariance matrix: \n", combined_cov)
-    c_means = get_means(norm_data, nc) # Means per class
+    # print("Combined covariance matrix: \n", combined_cov)
+    # c_means = get_means(norm_data, nc) # Means per class
+    c_means = util.get_means(norm_data, nc) # Means per class
+    print("c_means: \n", c_means)
     distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[len(test_data)-1])
     print("Means: ", c_means)
     for i in range(len(norm_data)):
@@ -93,6 +97,27 @@ if(method == 3):
       selected_class = 0
       for c in range(1, nc+1):
         if(gis[c] > gis[max]):
+          max = c
+    
+      predicted.append(max)
+
+if(method == 4):
+    output_name = "naive_bayes"
+    # NAIVE BAYES CLASSIFIERS 
+    real = norm_data["y"]
+    variances = util.get_variances(norm_data, nc)
+    means = util.get_means(norm_data, nc)
+    prioris = util.get_prioris(norm_data, nc)
+    print("Variances: \n", variances)
+    print("Means: \n", means)
+    print("Test data: \n", test_data)
+    # norm_data = norm_data.drop("y", axis=1)
+    for i in range(int(len(norm_data) / 10)):
+      terms = naive_bayes.calc(variances, means, prioris, norm_data, nc, test_data[i])
+      print("TERMS: ", terms)
+      max = [*terms][0]
+      for c in range(1, nc+1):
+        if(terms[c] > terms[max]):
           max = c
     
       predicted.append(max)
