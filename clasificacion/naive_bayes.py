@@ -19,10 +19,6 @@ def calc(variances, means, prioris, norm_data, nc, test_data):
     product = 0
     for i in range(len(cols)):
         d = cols.index(cols[i])
-        # print("Cols len: ", len(cols))
-        # print("Cols: ", cols)
-        # print("Attribute index: ", i)
-        # print("Variances: \n", variances)
         variance = variances[c][i] # Variance per class, per attribute.
         term = 1 / math.sqrt(2 * math.pi * variance)
         p1 = -1/(2 * variance)

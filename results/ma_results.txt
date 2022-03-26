@@ -1,11 +1,11 @@
-============ ./data/steel.csv MAHALANOBIS DISTANCE RESULTS ===========
+===== MAHALANOBIS DISTANCE ======
 
 
 Results kfolds(k=5) multiclass: 
-f1: 0.519
-avg_acc: 0.848
-global_acc: 0.468
-prec: 0.598
-sens: 0.459
-speci: 0.914
-phi_coef: 0.41
+f1: 0.975
+avg_acc: 0.983
+global_acc: 0.975
+prec: 0.974
+sens: 0.975
+speci: 0.988
+phi_coef: 0.962

@@ -15,21 +15,14 @@ def get_combined_cov(norm_data, nc):
 
     # first part of the formula.
     combined_cov = 1 / combined_cov
-    print("Combined cov = ", combined_cov)
 
     for c in range(1, nc+1):
       ni = len(norm_data[norm_data["y"] == c])
-      print("Total por clase: ", ni)
       ci[c] = norm_data[norm_data["y"] == c]
-      print(f"Ci[{c}]: \n", ci[c])
       # Covariance matrix for each class.
       covs[c] = ci[c].drop('y', axis=1).cov()
-      # covs[c] = np.cov(ci[c].drop('y', axis=1))
-      print(f"Covs[{c}]: \n{covs[c]}")
       cov += covs[c] * (ni - 1)
 
-    
-    # print(f"cov: \n{cov}")
     matrix = combined_cov * cov
 
     pd.DataFrame(matrix).to_csv("combined_cov.csv")

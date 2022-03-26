@@ -23,16 +23,12 @@ def get_terms(norm_data, nc):
     ci[key] = norm_data[norm_data["y"] == c]
     pws[key] = len(ci[key]) / len(norm_data)
     covs[key] = ci[key].drop('y', axis=1).cov()
-    print(f"Covs[c]: \n{covs[c]}")
     covs_i[key] = np.linalg.inv(covs[key])
     qws[key] = covs_i[key] * -0.5
     mus[key] = ci[key].drop('y', axis=1).mean()
     ws[key] = covs_i[key].dot(mus[key])
     w_0s[key] = (-0.5 * (mus[key].transpose()).dot(ws[key])) - (0.5 * math.log(np.linalg.det(covs[key]))) + math.log(pws[key])
  
-  print("qws: \n", qws)
-  print("ws: \n", ws)
-  print("w_0s: \n", w_0s)
   return qws, ws, w_0s
 
 def gi(qws, ws, w_0s, nc, inpt):
