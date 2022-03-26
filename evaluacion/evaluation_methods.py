@@ -159,6 +159,7 @@ def experiment_multiclass(sampling, dataset, n):
     # Averaging.  
     for m in metrics:
         metrics[m] /= n
+        metrics[m] = round(metrics[m], 3)
 
   else:
     # KFOLDS
@@ -176,5 +177,6 @@ def experiment_multiclass(sampling, dataset, n):
     
     for m in metrics:
       metrics[m] /= folds
+      metrics[m] = round(metrics[m], 3)
 
   return metrics

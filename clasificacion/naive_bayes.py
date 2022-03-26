@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
+# from pudb import set_trace; set_trace()
 
 def calc(variances, means, prioris, norm_data, nc, test_data):
   """ 
@@ -9,11 +10,12 @@ def calc(variances, means, prioris, norm_data, nc, test_data):
   inpt = test input
   """
   ci = {} # Class Instances
-  products = [] # Product data. 
+  densities = [] # Densities data. 
   
-  terms = {} # Results per classes 
+  products = {} # Results per classes 
   cols = list(norm_data.drop("y", axis=1).columns) # Dimensions
   for c in range(1, nc+1):
+    # breakpoint()
     product = 0
     for i in range(len(cols)):
         d = cols.index(cols[i])
@@ -27,10 +29,11 @@ def calc(variances, means, prioris, norm_data, nc, test_data):
         diff = test_data[i] - means[c][d]
         sq_diff = diff ** 2
         term *= math.exp(p1 * sq_diff)
-        products.append(term)
+        densities.append(term)
 
-    product = np.prod(products) * prioris[c]
-    terms[c] = product
+    product = np.prod(densities) * prioris[c]
+    products[c] = product
+    densities = [] # Reset for next class
 
   # print(terms)
-  return terms
+  return products

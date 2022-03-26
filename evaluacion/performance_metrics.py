@@ -136,6 +136,8 @@ def get_multiclass_sensivity(conf_matrix, classes):
   c = len(conf_matrix.index)
 
   counts = get_tri_counts(conf_matrix, classes)
+  # print("Conf matrix: ", conf_matrix)
+  # print("Counts: ", counts)
   sensitivity = 0
   for i in range(c):
     sensitivity += (counts[i]["VP"] / (counts[i]["VP"] + counts[i]["FN"]))

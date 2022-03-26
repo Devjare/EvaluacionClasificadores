@@ -1,0 +1,11 @@
+============ ./data/steel.csv EUCLIDEAN DISTANCE RESULTS ===========
+
+
+Results kfolds(k=5) multiclass: 
+f1: 0.394
+avg_acc: 0.818
+global_acc: 0.362
+prec: 0.451
+sens: 0.349
+speci: 0.9
+phi_coef: 0.301

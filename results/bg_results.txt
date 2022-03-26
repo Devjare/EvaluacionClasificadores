@@ -1,0 +1,11 @@
+============ ./data/steel.csv BAYES GENERAL RESULTS ===========
+
+
+Results kfolds(k=5) multiclass: 
+f1: 0.685
+avg_acc: 0.887
+global_acc: 0.604
+prec: 0.726
+sens: 0.648
+speci: 0.933
+phi_coef: 0.549

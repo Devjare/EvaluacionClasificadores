@@ -13,6 +13,7 @@ import euclidean
 import naive_bayes
 from sklearn.preprocessing import MinMaxScaler
 import util
+# from pudb import set_trace; set_trace()
 
 # MIO
 url_dataset = sys.argv[1]
@@ -112,18 +113,18 @@ if(method == 4):
     print("Means: \n", means)
     print("Test data: \n", test_data)
     # norm_data = norm_data.drop("y", axis=1)
-    for i in range(int(len(norm_data) / 10)):
+    # for i in range(int(len(norm_data) / 10)):
+    for i in range(len(norm_data)):
       terms = naive_bayes.calc(variances, means, prioris, norm_data, nc, test_data[i])
-      print("TERMS: ", terms)
+      # print("TERMS: ", terms)
       max = [*terms][0]
       for c in range(1, nc+1):
         if(terms[c] > terms[max]):
           max = c
-    
+   
       predicted.append(max)
 
 # naive-bayes is p(x|wi) * p(wi)
-
 norm_data['yp'] = predicted
 norm_data['5fold'] = foldr
 
@@ -136,4 +137,4 @@ res = y == yp
 print("True: ", res[res == True])
 print("Resultado: ", sum(y == yp))
 
-norm_data.to_csv(f"./{output_name}_classified.csv")
+norm_data.to_csv(f"./results/{output_name}_classified.csv")
