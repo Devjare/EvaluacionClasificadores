@@ -115,3 +115,6 @@ print(f"Resultado evalucion para: {output_name} = ")
 print("Predichas correctamente: ", sum(y == yp))
 
 norm_data.to_csv(f"./results/{output_name}_classified.csv")
+
+nofolds = norm_data.drop("5fold", axis=1)
+nofolds.to_csv(f"./results/{output_name}_nofolds_classified.csv")

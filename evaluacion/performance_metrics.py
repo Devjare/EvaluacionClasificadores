@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import math
 
+COMP = 0.00001
+
 """# EJERCICIO 2. MEDIDAS DE DESEMPEÑO
 ## Matriz de confusion.
 """
@@ -90,6 +92,7 @@ def get_f1_score(cmc):
 def get_global_accuracy(conf_matrix):
   trc = sum(np.diag(conf_matrix))
   n = sum(sum(conf_matrix.to_numpy()))
+
   acc = trc/n
   return acc
 
@@ -110,11 +113,14 @@ def get_avg_accuracy(conf_matrix, classes):
 
 def get_multiclass_precision(conf_matrix, classes):
   c = len(conf_matrix.index)
-
+ 
   counts = get_tri_counts(conf_matrix, classes)
   precision = 0
   for i in range(c):
-    precision += (counts[i]["VP"] / (counts[i]["VP"] + counts[i]["FP"]))
+    if(counts[i]["VP"] == 0 and counts[i]["FP"] == 0):
+        print("Conf matrix: ", conf_matrix)
+    precision += ( counts[i]["VP"] / (counts[i]["VP"] + counts[i]["FP"] + COMP) )
+    # + 0.00001 to prevent 0s on division.
 
   return precision * (1 / c)
 
@@ -140,7 +146,7 @@ def get_multiclass_sensivity(conf_matrix, classes):
   # print("Counts: ", counts)
   sensitivity = 0
   for i in range(c):
-    sensitivity += (counts[i]["VP"] / (counts[i]["VP"] + counts[i]["FN"]))
+    sensitivity += (counts[i]["VP"] / (counts[i]["VP"] + counts[i]["FN"] + COMP))
 
   return sensitivity * (1 / c)
 

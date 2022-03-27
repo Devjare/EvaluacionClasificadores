@@ -1,5 +1,2 @@
-- [ ] Check if the mahalanobis classifier works. IT classifies, but on distances selection for
-the class I'm not enterly sure if it works.
-
 - [ ] Implement covariance/variance verifier in order to select which classifier suits best
       the dataset.

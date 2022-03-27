@@ -96,14 +96,14 @@ def kfolds_sampling(data,classes,k=5):
   # print("Fold proportions: ", fold_class_proportion)
 
   samples = {}
-  for i in range(k):
-    samples[str(i)] = []
+  for i in range(1, k+1):
+    samples[i] = []
 
   j = 0
   total = 0
   not_assigned = []
   # fold_cp = Fold Class Proportion
-  for i in range(k):
+  for i in range(1, k+1):
     # Repeat for each fold.
     # Temporarily copy class proportions, for each fold.
     # Since it has to repeat for each fold the same process of selection.
@@ -118,7 +118,7 @@ def kfolds_sampling(data,classes,k=5):
   
       total += fold_cp[e]
 
-    if(i == k-1 and diff > 0):
+    if(i == k and diff > 0):
       while(diff > 0):
         for e in fold_cp:
           choice = np.random.choice([1,0])
@@ -134,16 +134,16 @@ def kfolds_sampling(data,classes,k=5):
       # have one less item, in case of inbalance.
       y = data["y"][j]
             
-      choice = np.random.choice(np.arange(k))
-      samples[str(i)].append(choice)
+      choice = np.random.choice(np.arange(1, k+1))
+      samples[i].append(choice)
       fold_cp[y] = fold_cp[y] - 1
       j += 1
 
-  for i in range(k):
-      samples[str(i)] = np.array(samples[str(i)])
-  
+  for i in range(1, k+1):
+      samples[i] = np.array(samples[i])
+ 
   sample = np.array([])
   for i in samples:
-    sample = np.append(sample, samples[str(i)])
+    sample = np.append(sample, samples[i])
 
   return sample
