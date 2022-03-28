@@ -7,11 +7,11 @@ import math
 import sys
 from sklearn.preprocessing import MinMaxScaler
 # Local files.
-import util
-import euclidean
-import naive_bayes
-from bayes_general import get_terms, gi
-from mahalanobis import get_combined_cov, get_distances
+from clasificacion.util import get_means, get_variances, get_prioris
+from clasificacion.euclidean import get_eu_distances
+from clasificacion.mahalanobis import get_combined_cov, get_ma_distances
+from clasificacion.naive_bayes import calc
+from clasificacion.bayes_general import get_terms, gi
 
 # Debugging.
 # from pudb import set_trace; set_trace()
@@ -47,11 +47,11 @@ output_name = "" # File with results name.
 if(method == 1):
     # EUCLIDEAN DISTANCE
     output_name = "euclidean"
-    c_means = euclidean.get_means(norm_data, nc) # Means per class
+    c_means = get_means(norm_data, nc) # Means per class
     # distances = euclidean.get_distances(c_means, norm_data, nc, test_data[len(test_data)-1])
     for i in range(len(norm_data)):
       # print("Test vector: \n", test_data[i])
-      distances = euclidean.get_distances(c_means, norm_data, nc, test_data[i])
+      distances = get_eu_distances(c_means, norm_data, nc, test_data[i])
       max = [*distances][0] # Default distance
       for c in range(1, nc+1):
         if(distances[c] < distances[max]):
@@ -63,10 +63,9 @@ if(method == 2):
     output_name = "mahalanobis"
     # MAHALANOBIS DISTANCE
     combined_cov = get_combined_cov(norm_data, nc) # Combined Covariance Matrix.
-    c_means = util.get_means(norm_data, nc) # Means per class
-    distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[len(test_data)-1])
+    c_means = get_means(norm_data, nc) # Means per class
     for i in range(len(norm_data)):
-      distances = get_distances(combined_cov, c_means, norm_data, nc, test_data[i])
+      distances = get_ma_distances(combined_cov, c_means, norm_data, nc, test_data[i])
       max = [*distances][0] # Default distance
       for c in range(1, nc+1):
         if(distances[c] < distances[max]):
@@ -92,11 +91,11 @@ if(method == 4):
     output_name = "naive_bayes"
     # NAIVE BAYES CLASSIFIERS 
     real = norm_data["y"]
-    variances = util.get_variances(norm_data, nc)
-    means = util.get_means(norm_data, nc)
-    prioris = util.get_prioris(norm_data, nc)
+    variances = get_variances(norm_data, nc)
+    means = get_means(norm_data, nc)
+    prioris = get_prioris(norm_data, nc)
     for i in range(len(norm_data)):
-      terms = naive_bayes.calc(variances, means, prioris, norm_data, nc, test_data[i])
+      terms = calc(variances, means, prioris, norm_data, nc, test_data[i])
       # print("TERMS: ", terms)
       max = [*terms][0]
       for c in range(1, nc+1):

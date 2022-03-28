@@ -11,10 +11,10 @@ export LANDRES_DS=./data/seeds.csv
 
 # python clasificacion/clasificadores.py 
 # ABDIEL TEST.
-python clasificacion/clasificadores.py $LABDIEL_DS 4
-python clasificacion/clasificadores.py $LABDIEL_DS 3
-python clasificacion/clasificadores.py $LABDIEL_DS 2
-python clasificacion/clasificadores.py $LABDIEL_DS 1
+python clasificadores.py $LANDRES_DS 4
+python clasificadores.py $LANDRES_DS 3
+python clasificadores.py $LANDRES_DS 2
+python clasificadores.py $LANDRES_DS 1
 # 
 # export RDS_NB=results/naive_bayes_classified.csv # Result DataSet for Naive-Bayes
 # export RDS_BG=results/bayes_general_classified.csv # Result DataSet for Bayes General
