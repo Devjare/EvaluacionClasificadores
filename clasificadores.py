@@ -7,11 +7,11 @@ import math
 import sys
 from sklearn.preprocessing import MinMaxScaler
 # Local files.
-from clasificacion.util import get_means, get_variances, get_prioris
+from clasificacion.util import get_variances, get_means, get_prioris
 from clasificacion.euclidean import get_eu_distances
-from clasificacion.mahalanobis import get_combined_cov, get_ma_distances
 from clasificacion.naive_bayes import calc
 from clasificacion.bayes_general import get_terms, gi
+from clasificacion.mahalanobis import get_combined_cov, get_ma_distances
 
 # Debugging.
 # from pudb import set_trace; set_trace()
